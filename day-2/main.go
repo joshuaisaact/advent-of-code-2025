@@ -7,19 +7,68 @@ import (
 	"strings"
 )
 
-func isRepeatedSequence(input string) bool {
+func isRepeatedSequenceSolve1(input string) bool {
 	if len(input)%2 != 0 {
 		return false
 	}
 
 	mid := len(input) / 2
-	return input[:mid] == input[mid:]
+
+	if input[:mid] == input[mid:] == true {
+		fmt.Println("Repeated middle split!", input)
+		return true
+	} else {
+		return false
+	}
 }
 
-func isRepeatedSequenceSolve2(input string) bool {
+func isRepeatedSequenceSingleNumbers(input string) bool {
+	comparator := input[0]
+	for i := 1; i < len(input); i++ {
+		if comparator == input[i] {
+			continue
+		} else {
+			return false
+		}
+	}
+	fmt.Println("Repeated single numbers!", input)
+	return true
+}
 
-	mid := len(input) / 2
-	return input[:mid] == input[mid:]
+func isRepeatedSequenceDoubleNumbers(input string) bool {
+	if len(input) <= 3 {
+		return false
+	}
+
+	comparator := input[:2]
+
+	for i := 2; i < len(input); i += 2 {
+		if comparator == input[i:i+2] {
+			continue
+		} else {
+			return false
+		}
+	}
+	fmt.Println("Repeated double numbers!", input)
+	return true
+}
+
+func isRepeatedSequenceTripleNumbers(input string) bool {
+	if len(input) <= 7 {
+		return false
+	}
+
+	comparator := input[:3]
+
+	for i := 3; i < len(input); i += 3 {
+		if comparator == input[i:i+3] {
+			continue
+		} else {
+			return false
+		}
+	}
+	fmt.Println("Repeated triple numbers!", input)
+	return true
 }
 
 func solve1(inputArr []string) int {
@@ -34,7 +83,35 @@ func solve1(inputArr []string) int {
 		for i := id1; i <= id2; i++ {
 			stringNum := strconv.Itoa(i)
 
-			if isRepeatedSequence(stringNum) == true {
+			if isRepeatedSequenceSolve1(stringNum) == true {
+				invalidSum += i
+			}
+
+		}
+	}
+
+	return invalidSum
+}
+
+func solve2(inputArr []string) int {
+	invalidSum := 0
+
+	for _, ids := range inputArr {
+		parts := strings.Split(ids, "-")
+
+		id1, _ := strconv.Atoi(parts[0])
+		id2, _ := strconv.Atoi(parts[1])
+
+		for i := id1; i <= id2; i++ {
+			stringNum := strconv.Itoa(i)
+
+			if isRepeatedSequenceSolve1(stringNum) == true {
+				invalidSum += i
+			} else if isRepeatedSequenceSingleNumbers(stringNum) == true {
+				invalidSum += i
+			} else if isRepeatedSequenceDoubleNumbers(stringNum) == true {
+				invalidSum += i
+			} else if isRepeatedSequenceTripleNumbers(stringNum) == true {
 				invalidSum += i
 			}
 
