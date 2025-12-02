@@ -8,7 +8,7 @@ import (
 )
 
 func isRepeatedSequenceSolve1(input string) bool {
-	if len(input)%2 != 0 {
+	if len(input)%2 != 0 || len(input) < 3 {
 		return false
 	}
 
@@ -20,55 +20,6 @@ func isRepeatedSequenceSolve1(input string) bool {
 	} else {
 		return false
 	}
-}
-
-func isRepeatedSequenceSingleNumbers(input string) bool {
-	comparator := input[0]
-	for i := 1; i < len(input); i++ {
-		if comparator == input[i] {
-			continue
-		} else {
-			return false
-		}
-	}
-	fmt.Println("Repeated single numbers!", input)
-	return true
-}
-
-func isRepeatedSequenceDoubleNumbers(input string) bool {
-	if len(input) <= 3 {
-		return false
-	}
-
-	comparator := input[:2]
-
-	for i := 2; i < len(input); i += 2 {
-		if comparator == input[i:i+2] {
-			continue
-		} else {
-			return false
-		}
-	}
-	fmt.Println("Repeated double numbers!", input)
-	return true
-}
-
-func isRepeatedSequenceTripleNumbers(input string) bool {
-	if len(input) <= 7 {
-		return false
-	}
-
-	comparator := input[:3]
-
-	for i := 3; i < len(input); i += 3 {
-		if comparator == input[i:i+3] {
-			continue
-		} else {
-			return false
-		}
-	}
-	fmt.Println("Repeated triple numbers!", input)
-	return true
 }
 
 func solve1(inputArr []string) int {
@@ -93,8 +44,61 @@ func solve1(inputArr []string) int {
 	return invalidSum
 }
 
+func isRepeatedSequenceSingleNumbers(input string) bool {
+	if len(input) < 2 {
+		return false
+	}
+
+	comparator := input[0]
+	for i := 1; i < len(input); i++ {
+		if comparator == input[i] {
+			continue
+		} else {
+			return false
+		}
+	}
+	fmt.Println("Repeated single numbers!", input)
+	return true
+}
+
+func isRepeatedSequenceDoubleNumbers(input string) bool {
+	if len(input) <= 3 || len(input)%2 != 0 {
+		return false
+	}
+
+	comparator := input[:2]
+
+	for i := 2; i < len(input); i += 2 {
+		if comparator == input[i:i+2] {
+			continue
+		} else {
+			return false
+		}
+	}
+	fmt.Println("Repeated double numbers!", input)
+	return true
+}
+
+func isRepeatedSequenceTripleNumbers(input string) bool {
+	if len(input) <= 7 || len(input)%3 != 0 {
+		return false
+	}
+
+	comparator := input[:3]
+
+	for i := 3; i < len(input); i += 3 {
+		if comparator == input[i:i+3] {
+			continue
+		} else {
+			return false
+		}
+	}
+	fmt.Println("Repeated triple numbers!", input)
+	return true
+}
+
 func solve2(inputArr []string) int {
-	invalidSum := 0
+	invalidIDSum := 0
 
 	for _, ids := range inputArr {
 		parts := strings.Split(ids, "-")
@@ -105,20 +109,18 @@ func solve2(inputArr []string) int {
 		for i := id1; i <= id2; i++ {
 			stringNum := strconv.Itoa(i)
 
-			if isRepeatedSequenceSolve1(stringNum) == true {
-				invalidSum += i
-			} else if isRepeatedSequenceSingleNumbers(stringNum) == true {
-				invalidSum += i
-			} else if isRepeatedSequenceDoubleNumbers(stringNum) == true {
-				invalidSum += i
-			} else if isRepeatedSequenceTripleNumbers(stringNum) == true {
-				invalidSum += i
+			if isRepeatedSequenceSolve1(stringNum) ||
+				isRepeatedSequenceSingleNumbers(stringNum) ||
+				isRepeatedSequenceDoubleNumbers(stringNum) ||
+				isRepeatedSequenceTripleNumbers(stringNum) {
+				invalidIDSum += i
+				continue
 			}
 
 		}
 	}
 
-	return invalidSum
+	return invalidIDSum
 }
 
 func main() {
