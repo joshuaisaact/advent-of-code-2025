@@ -6,8 +6,12 @@ import (
 	"strings"
 )
 
-func checkSurrounds(grid [][]byte, y int, x int) bool {
-	if grid[y][x] != '@' {
+type Point struct {
+	X, Y int
+}
+
+func checkSurrounds(grid [][]byte, p Point) bool {
+	if grid[p.Y][p.X] != '@' {
 		return false
 	}
 
@@ -15,48 +19,48 @@ func checkSurrounds(grid [][]byte, y int, x int) bool {
 	height := len(grid)
 	width := len(grid[0])
 
-	fmt.Println("Check surrounds running with:", x, y)
+	// fmt.Println("Check surrounds running with:", x, y)
 
 	// Top
-	if y > 0 {
-		if x > 0 && grid[y-1][x-1] == '@' {
+	if p.Y > 0 {
+		if p.X > 0 && grid[p.Y-1][p.X-1] == '@' {
 			numRolls++
 		}
-		if grid[y-1][x] == '@' {
+		if grid[p.Y-1][p.X] == '@' {
 			numRolls++
 		}
-		if x < width-1 && grid[y-1][x+1] == '@' {
+		if p.X < width-1 && grid[p.Y-1][p.X+1] == '@' {
 			numRolls++
 		}
 	}
 	// Middle
-	if x > 0 && grid[y][x-1] == '@' {
+	if p.X > 0 && grid[p.Y][p.X-1] == '@' {
 		numRolls++
 		if numRolls >= 4 {
 			return false
 		}
 	}
-	if x < width-1 && grid[y][x+1] == '@' {
+	if p.X < width-1 && grid[p.Y][p.X+1] == '@' {
 		numRolls++
 		if numRolls >= 4 {
 			return false
 		}
 	}
 	// Bottom
-	if y < height-1 {
-		if x > 0 && grid[y+1][x-1] == '@' {
+	if p.Y < height-1 {
+		if p.X > 0 && grid[p.Y+1][p.X-1] == '@' {
 			numRolls++
 			if numRolls >= 4 {
 				return false
 			}
 		}
-		if grid[y+1][x] == '@' {
+		if grid[p.Y+1][p.X] == '@' {
 			numRolls++
 			if numRolls >= 4 {
 				return false
 			}
 		}
-		if x < width-1 && grid[y+1][x+1] == '@' {
+		if p.X < width-1 && grid[p.Y+1][p.X+1] == '@' {
 			numRolls++
 			if numRolls >= 4 {
 				return false
@@ -70,10 +74,11 @@ func checkSurrounds(grid [][]byte, y int, x int) bool {
 func solve1(grid [][]byte) int {
 	accessibleRolls := 0
 	for y, line := range grid {
-		for x, _ := range line {
-			if checkSurrounds(grid, x, y) {
-				fmt.Println("Roll accessible at:", x, y)
-				accessibleRolls += 1
+		for x := range line {
+			if checkSurrounds(grid, Point{x, y}) {
+				// fmt.Println("Roll accessible at:", x, y)
+
+				accessibleRolls++
 			}
 		}
 	}
@@ -81,16 +86,34 @@ func solve1(grid [][]byte) int {
 }
 
 func solve2(grid [][]byte) int {
-	accessibleRolls := 0
-	for y, line := range grid {
-		for x, _ := range line {
-			if checkSurrounds(grid, x, y) == true {
-				fmt.Println("Roll accessible at:", x, y)
-				accessibleRolls += 1
+	totalRemoved := 0
+	pass := 0
+	for {
+		removedRolls := []Point{}
+		for y, line := range grid {
+			for x := range line {
+				if checkSurrounds(grid, Point{x, y}) {
+					removedRolls = append(removedRolls, Point{x, y})
+				}
 			}
 		}
+
+		fmt.Printf("Pass %d: found %d removable \n", pass, len(removedRolls))
+
+		if len(removedRolls) == 0 {
+			break
+		}
+
+		for _, p := range removedRolls {
+			grid[p.Y][p.X] = '.'
+		}
+
+		totalRemoved += len(removedRolls)
+		fmt.Printf("Pass %d: removed %d\n", pass, totalRemoved)
+		pass++
 	}
-	return accessibleRolls
+
+	return totalRemoved
 }
 
 func main() {

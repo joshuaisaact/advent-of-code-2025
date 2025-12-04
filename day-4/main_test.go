@@ -26,18 +26,22 @@ func TestSolve1(t *testing.T) {
 	}
 }
 
-// func TestSolve2(t *testing.T) {
-// 	data, err := os.ReadFile("testinput.txt")
-// 	if err != nil {
-// 		t.Fatal(err)
-// 	}
+func TestSolve2(t *testing.T) {
+	data, err := os.ReadFile("testinput.txt")
+	if err != nil {
+		t.Fatal(err)
+	}
 
-// 	input := strings.TrimSpace(string(data))
-// 	inputArr := strings.Split(input, "\n")
-// 	got := solve2(inputArr)
-// 	want := 3121910778619
+	input := strings.TrimSpace(string(data))
+	inputArr := strings.Split(input, "\n")
+	var grid [][]byte
+	for _, line := range inputArr {
+		grid = append(grid, []byte(line))
+	}
+	got := solve2(grid)
+	want := 43
 
-// 	if got != want {
-// 		t.Errorf("solve() = %d, want %d", got, want)
-// 	}
-// }
+	if got != want {
+		t.Errorf("solve() = %d, want %d", got, want)
+	}
+}
